@@ -1,0 +1,35 @@
+version: '2'
+services:
+  nginx:
+    container_name: nginx-yii
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./containers/nginx:/etc/nginx/conf.d
+      - ./../:/var/www
+      - ./logs/nginx:/var/log/nginx
+    links:
+      - php
+    env_file:
+      - ../.env
+  php:
+    container_name: php-yii
+    build: ./containers/php
+    links:
+      - mysql
+    volumes:
+      - ./../:/var/www
+    env_file:
+      - ../.env
+  mysql:
+    container_name: mysql-yii
+    image: mysql:8
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - ./logs/mysql/mysql.log:/var/log/mysql.log
+    env_file:
+      - ../.env
