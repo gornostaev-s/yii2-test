@@ -20,5 +20,3 @@ EXPOSE 9000
 
 # Указываем рабочую директорию для PHP
 WORKDIR /var/www
-
-CMD ["php-fpm -F"]
