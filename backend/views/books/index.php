@@ -1,5 +1,6 @@
 <?php
 
+use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\helpers\Html;
 
@@ -9,6 +10,11 @@ use yii\helpers\Html;
 
 $this->title = 'Книги';
 $this->params['breadcrumbs'][] = $this->title;
+$actions = [
+    'class' => ActionColumn::class, // Класс колонки действий
+    'header' => 'Действия', // Заголовок колонки
+    'template' => Yii::$app->user->can('user') ? '{view} {update} {delete}' : '{view}', // Кнопки, которые будут отображаться
+];
 ?>
 
     <p><?= Html::a('Создать книгу', ['create'], ['class' => 'btn btn-success']) ?></p>
@@ -31,8 +37,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 return Html::a($model->title, ['books/update', 'id' => $model->id]);
             }
         ],
-//        AppHelper::getEditableStatusColumn($searchModel, '/channel/update', ChannelForm::class),
-//        AppHelper::getActionButton(),
-//        AppHelper::getDeleteColumn('/channel/delete', ChannelForm::class),
+        $actions
     ],
 ]); ?>

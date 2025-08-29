@@ -15,16 +15,17 @@ use Throwable;
 use Yii;
 use yii\db\Exception;
 use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\web\UploadedFile;
 
 class BooksController extends Controller
 {
     public function __construct(
         $id,
         $module,
-        private readonly BookRepository $repository,
+        private readonly BookRepository $bookRepository,
         private readonly AuthorRepository $authorRepository,
         private readonly BookService $service,
         $config = []
@@ -42,17 +43,25 @@ class BooksController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'update'],
+                        'actions' => ['index', 'create', 'update', 'delete', 'view'],
                         'allow' => true,
                         'roles' => ['user'],
+                    ],
+                    [
+                        'actions' => ['index', 'view'],
+                        'allow' => true,
+                        'roles' => ['guest'],
                     ],
                 ],
             ],
         ];
     }
 
-    public function actionView()
+    public function actionView(int $id): string
     {
+        return $this->render('view', [
+            'model' => $this->bookRepository->get($id)
+        ]);
     }
 
     public function actionIndex(): string
@@ -102,7 +111,7 @@ class BooksController extends Controller
         $form = new BookForm();
 
         /** @var Book|null $model */
-        $model = $this->repository->get($id);
+        $model = $this->bookRepository->get($id);
         $form->setAttributes($model->attributes);
         $form->author_ids = array_map(static function (Author $author) {
             return $author->id;
@@ -126,8 +135,20 @@ class BooksController extends Controller
         ]);
     }
 
-    public function actionDelete()
+    /**
+     * @param int $id
+     * @return mixed
+     * @throws NotFoundHttpException
+     */
+    public function actionDelete(int $id): mixed
     {
-        // TODO: Дописать удаление
+        /** @var Book|null $book */
+        if ($book = $this->bookRepository->get($id)) {
+            $this->service->delete($book);
+
+            return $this->redirect('index');
+        }
+
+        throw new NotFoundHttpException('Книга не найдена');
     }
 }

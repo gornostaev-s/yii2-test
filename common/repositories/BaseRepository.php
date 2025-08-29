@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace common\repositories;
 
-use Throwable;
 use yii\db\ActiveRecord;
 use yii\db\ActiveRecordInterface;
 use yii\db\Exception;
-use yii\db\StaleObjectException;
 
 abstract class BaseRepository
 {
@@ -38,15 +36,11 @@ abstract class BaseRepository
     }
 
     /**
-     * @param int $id
+     * @param ActiveRecordInterface $model
      * @return bool|int
-     * @throws Throwable
-     * @throws StaleObjectException
      */
-    public function delete(int $id): bool|int
+    public function delete(ActiveRecordInterface $model): bool|int
     {
-        $model = static::$modelClass::findOne($id);
-
         return $model->delete();
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace common\models\forms;
 
 use yii\base\Model;
+use yii\web\UploadedFile;
 
 /**
  * @property int $id
@@ -23,6 +24,7 @@ class BookForm extends Model
     public ?string $year = null;
     public ?string $image_url = null;
     public ?array $author_ids = null;
+    public ?string $image_file = null;
 
     public function rules(): array
     {
@@ -30,6 +32,7 @@ class BookForm extends Model
             [['title', 'isbn', 'year'], 'required'],
             [['description', 'image_url'], 'string'],
             [['author_ids'], 'safe'],
+            [['image_file'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg'],
             [['year'], 'integer'],
         ];
     }
@@ -42,6 +45,7 @@ class BookForm extends Model
             'isbn' => 'ISBN',
             'year' => 'Год выпуска',
             'image_url' => 'Ссылка на обложку',
+            'image_file' => 'Изображение обложки',
         ];
     }
 }

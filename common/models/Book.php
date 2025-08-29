@@ -38,4 +38,15 @@ class Book extends ActiveRecord
         return $this->hasMany(Author::class, ['id' => 'author_id'])
             ->viaTable(BookAuthor::tableName(), ['book_id' => 'id']);
     }
+
+    public function attributeLabels(): array
+    {
+        return [
+            'title' => 'Название',
+            'description' => 'Описание',
+            'isbn' => 'ISBN',
+            'year' => 'Год выпуска',
+            'image_url' => 'Обложка',
+        ];
+    }
 }
