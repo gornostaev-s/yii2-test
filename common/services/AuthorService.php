@@ -6,6 +6,7 @@ namespace common\services;
 
 use common\models\Author;
 use common\models\forms\AuthorForm;
+use common\models\User;
 use common\repositories\AuthorRepository;
 use Exception;
 use Throwable;
@@ -57,6 +58,15 @@ class AuthorService
     {
         return $this->transactionService->wrap(function () use ($model) {
             $this->authorRepository->delete($model);
+
+            return $model;
+        });
+    }
+
+    public function subscribeUserToAuthor(User $user, Author $author)
+    {
+        return $this->transactionService->wrap(function () use ($user, $author) {
+
 
             return $model;
         });

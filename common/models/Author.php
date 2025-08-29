@@ -18,6 +18,7 @@ use yii\db\ActiveRecord;
  * Related
  *
  * @property Book[] $books
+ * @property User[] $users
  */
 class Author extends ActiveRecord
 {
@@ -50,5 +51,15 @@ class Author extends ActiveRecord
     {
         return $this->hasMany(Book::class, ['id' => 'book_id'])
             ->viaTable(BookAuthor::tableName(), ['author_id' => 'id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     * @throws InvalidConfigException
+     */
+    public function getUsers(): ActiveQuery
+    {
+        return $this->hasMany(User::class, ['id' => 'user_id'])
+            ->viaTable(AuthorUser::tableName(), ['author_id' => 'id']);
     }
 }
