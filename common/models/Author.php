@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace common\models;
 
+use yii\base\InvalidConfigException;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -12,6 +14,10 @@ use yii\db\ActiveRecord;
  * @property string $last_name
  * @property string $middle_name
  * @property string $fio
+ *
+ * Related
+ *
+ * @property Book[] $books
  */
 class Author extends ActiveRecord
 {
@@ -34,5 +40,15 @@ class Author extends ActiveRecord
     public function getFio(): string
     {
         return "$this->last_name $this->first_name $this->middle_name";
+    }
+
+    /**
+     * @return ActiveQuery
+     * @throws InvalidConfigException
+     */
+    public function getBooks(): ActiveQuery
+    {
+        return $this->hasMany(Book::class, ['id' => 'book_id'])
+            ->viaTable(BookAuthor::tableName(), ['author_id' => 'id']);
     }
 }

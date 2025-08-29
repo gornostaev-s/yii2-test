@@ -6,6 +6,7 @@ namespace backend\controllers;
 
 use backend\models\AuthorSearch;
 use common\models\Author;
+use common\models\Book;
 use common\models\forms\AuthorForm;
 use common\repositories\AuthorRepository;
 use common\services\AuthorService;
@@ -15,6 +16,7 @@ use yii\db\Exception;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class AuthorsController extends Controller
@@ -39,7 +41,7 @@ class AuthorsController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'update'],
+                        'actions' => ['index', 'create', 'update', 'view', 'delete'],
                         'allow' => true,
                         'roles' => ['user'],
                     ],
@@ -101,6 +103,7 @@ class AuthorsController extends Controller
         /** @var Author|null $model */
         $model = $this->repository->get($id);
         $form->setAttributes($model->attributes);
+        $form->id = $model->id;
 
         if (Yii::$app->request->isPost) {
             $request = Yii::$app->request->post();
@@ -115,6 +118,30 @@ class AuthorsController extends Controller
 
         return $this->render('update', [
             'model' => $form
+        ]);
+    }
+
+    /**
+     * @param int $id
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionDelete(int $id): Response
+    {
+        /** @var Author|null $author */
+        if ($author = $this->repository->get($id)) {
+            $this->service->delete($author);
+
+            return $this->redirect('index');
+        }
+
+        throw new NotFoundHttpException('Автор не найден');
+    }
+
+    public function actionView(int $id): string
+    {
+        return $this->render('view', [
+            'model' => $this->repository->get($id)
         ]);
     }
 }

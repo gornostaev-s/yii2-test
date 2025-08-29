@@ -34,8 +34,8 @@ class BookService
         return $this->transactionService->wrap(function () use ($form) {
             $model = new Book();
             $model->setAttributes($form->attributes);
-            $model->save();
-            $model->link('authors', $this->authorRepository->get(1));
+            $this->bookRepository->save($model);
+            $this->linkAuthors($model, $form->author_ids);
 
             return $model;
         });

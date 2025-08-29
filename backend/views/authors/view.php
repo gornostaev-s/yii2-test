@@ -9,14 +9,14 @@ use yii\widgets\DetailView;
 use yii2mod\collection\Collection;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Book */
+/* @var $model common\models\Author */
 
-$this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Книги', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $model->id . ' | ' . $model->title;
+$this->title = $model->fio;
+$this->params['breadcrumbs'][] = ['label' => 'Авторы', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $model->id . ' | ' . $model->fio;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="book-view">
+<div class="author-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -30,17 +30,9 @@ $this->params['breadcrumbs'][] = $model->id . ' | ' . $model->title;
             [
                 'attribute' => 'id',
             ],
-            'title',
-            'description',
-            'isbn',
-            'year',
-            [
-                    'attribute' => 'image_url',
-                'format' => 'raw',
-                'value' => function (Book $book) {
-                    return Html::img($book->image_url, ['style' => 'max-width: 200px; max-height: 200px;']);
-                }
-            ],
+            'first_name',
+            'middle_name',
+            'last_name',
         ],
     ]) ?>
 

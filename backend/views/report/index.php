@@ -1,5 +1,6 @@
 <?php
 
+use backend\models\ReportSearch;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\helpers\Html;
@@ -17,7 +18,7 @@ $actions = [
 ];
 ?>
 
-    <p><?= Html::a('Создать автора', ['create'], ['class' => 'btn btn-success']) ?></p>
+<h1>Топ авторов за <?= ReportSearch::REPORT_YEAR?> год</h1>
 
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
@@ -29,9 +30,7 @@ $actions = [
             'contentOptions' => ['style' => 'text-align: center;'],
             'options' => ['style' => 'width: 5%'],
         ],
-        'first_name',
-        'middle_name',
-        'last_name',
-        $actions,
+        'fio',
+        'books_count'
     ],
 ]); ?>
