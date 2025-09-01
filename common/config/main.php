@@ -11,6 +11,9 @@ return [
         '@npm'   => '@vendor/npm-asset',
     ],
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
+    'bootstrap' => [
+        'queueSubscribers',
+    ],
     'container' => [
         'definitions' => [
             ManagerInterface::class => DbManager::class,
@@ -31,6 +34,16 @@ return [
             'username' => env('MYSQL_USER'),
             'password' => env('MYSQL_PASSWORD'),
             'charset' => 'utf8',
+        ],
+        'queueSubscribers' => [
+            'class' => \yii\queue\redis\Queue::class,
+            'redis' => 'redis', // Компонент подключения к Redis или его конфиг
+            'channel' => 'queueSubscribers', // Ключ канала очереди
+            'as log' => \yii\queue\LogBehavior::class
+        ],
+        'redis' => [
+            'class' => 'yii\redis\Connection',
+            'hostname' => 'redis', // or your Redis host
         ],
     ],
 ];
