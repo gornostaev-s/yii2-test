@@ -19,6 +19,7 @@ class BookService
         private readonly AuthorRepository $authorRepository,
         private readonly BookRepository $bookRepository,
         private readonly ImageService $imageService,
+        private readonly NotifySubscribersService $subscribersService,
     )
     {
     }
@@ -36,6 +37,7 @@ class BookService
             $model->setAttributes($form->attributes);
             $this->bookRepository->save($model);
             $this->linkAuthors($model, $form->author_ids);
+            $this->notifySubscribers($model);
 
             return $model;
         });
@@ -90,6 +92,13 @@ class BookService
         if ($fileInstance = UploadedFile::getInstance($form, 'image_file')) {
             $filePath = $this->imageService->saveCoverImage($fileInstance);
             $form->image_url = $filePath;
+        }
+    }
+
+    private function notifySubscribers(Book $book): void
+    {
+        foreach ($book->authors as $author) {
+            $this->subscribersService->sendByAuthor($book, $author);
         }
     }
 }

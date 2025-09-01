@@ -1,5 +1,7 @@
 <?php
 
+use common\interfaces\SendMessageInterface;
+use common\providers\smsPilot\SmsPilotClient;
 use yii\rbac\DbManager;
 use yii\rbac\ManagerInterface;
 
@@ -12,6 +14,7 @@ return [
     'container' => [
         'definitions' => [
             ManagerInterface::class => DbManager::class,
+            SendMessageInterface::class => SmsPilotClient::class
         ]
     ],
     'components' => [

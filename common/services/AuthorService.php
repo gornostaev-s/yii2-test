@@ -8,6 +8,7 @@ use common\models\Author;
 use common\models\forms\AuthorForm;
 use common\models\User;
 use common\repositories\AuthorRepository;
+use common\repositories\AuthorUserRepository;
 use Exception;
 use Throwable;
 
@@ -16,6 +17,7 @@ class AuthorService
     public function __construct(
         private readonly TransactionService $transactionService,
         private readonly AuthorRepository $authorRepository,
+        private readonly AuthorUserRepository $authorUserRepository,
     )
     {
     }
@@ -66,9 +68,16 @@ class AuthorService
     public function subscribeUserToAuthor(User $user, Author $author)
     {
         return $this->transactionService->wrap(function () use ($user, $author) {
+            if (!$this->authorUserRepository->findByUserIdAndAuthorId($user->id, $author->id)) {
+                $author->link('users', $user);
+            }
+        });
+    }
 
-
-            return $model;
+    public function unsubscribeUserToAuthor(User $user, Author $author)
+    {
+        return $this->transactionService->wrap(function () use ($user, $author) {
+            $author->unlink('users', $user, true);
         });
     }
 }

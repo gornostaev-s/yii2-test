@@ -41,9 +41,14 @@ class AuthorsController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'update', 'view', 'delete'],
+                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'subscribe', 'unsubscribe'],
                         'allow' => true,
                         'roles' => ['user'],
+                    ],
+                    [
+                        'actions' => ['index', 'view', 'subscribe', 'unsubscribe'],
+                        'allow' => true,
+                        'roles' => ['guest'],
                     ],
                 ],
             ],
@@ -143,5 +148,44 @@ class AuthorsController extends Controller
         return $this->render('view', [
             'model' => $this->repository->get($id)
         ]);
+    }
+
+    /**
+     * @param int $id
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionSubscribe(int $id): Response
+    {
+        [$user, $author] = $this->prepareUserAndAuthorsModels($id);
+        $this->service->subscribeUserToAuthor($user, $author);
+
+        return $this->redirect('index');
+    }
+
+    /**
+     * @param int $id
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionUnsubscribe(int $id): Response
+    {
+        [$user, $author] = $this->prepareUserAndAuthorsModels($id);
+        $this->service->unsubscribeUserToAuthor($user, $author);
+
+        return $this->redirect('index');
+    }
+
+    private function prepareUserAndAuthorsModels(int $authorId): array
+    {
+        $user = Yii::$app->user->identity;
+        /** @var Author $author */
+        $author = $this->repository->get($authorId);
+
+        if (!$author || !$user) {
+            throw new NotFoundHttpException("Не удалось найти пользователя или автора!");
+        }
+
+        return [$user, $author];
     }
 }
