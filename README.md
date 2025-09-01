@@ -1,13 +1,12 @@
+0) инициализируем .env
+
+```
+cp .env.example .env
+```
 1) сбилдим образ и запустим
 
 ```
 cd docker && docker-compose build && docker-compose up -d
-```
-
-1.1) инициализируем .env
-
-```
-cd .. && cp .env.example .env
 ```
 
 2) попадем в контейнер и установим зависимости, миграции

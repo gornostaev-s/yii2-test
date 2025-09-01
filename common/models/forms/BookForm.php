@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace common\models\forms;
 
 use yii\base\Model;
+use yii\validators\RequiredValidator;
 use yii\web\UploadedFile;
 
 /**
@@ -32,6 +33,7 @@ class BookForm extends Model
             [['title', 'isbn', 'year'], 'required'],
             [['description', 'image_url'], 'string'],
             [['author_ids'], 'safe'],
+            [['author_ids'], RequiredValidator::class, 'skipOnEmpty' => false, 'message' => 'Выберите как минимум 1 автора'],
             [['image_file'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg'],
             [['year'], 'integer'],
         ];
