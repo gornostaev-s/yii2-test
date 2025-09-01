@@ -3,6 +3,7 @@
 /yii_test
 /yii_test.bat
 backend/web/uploads/
+common/runtime
 
 # phpstorm project files
 .idea

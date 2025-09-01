@@ -5,27 +5,24 @@ declare(strict_types=1);
 namespace common\services;
 
 use common\interfaces\SendMessageInterface;
+use common\jobs\NotifySubscriberJob;
 use common\models\Author;
 use common\models\Book;
 use common\models\User;
+use Yii;
 
 class NotifySubscribersService
 {
     const TEXT_TEMPLATE = "Вышла новая книга! {title}";
 
-    public function __construct(
-        private readonly SendMessageInterface $client
-    )
-    {
-    }
-
     private function notifyUser(Book $book, User $user): void
     {
-        $text = strtr(self::TEXT_TEMPLATE, [
-            '{title}' => $book->title
-        ]);
-
-        $this->client->sendMessage((int)$user->phone, $text);
+        Yii::$app->queueSubscribers->push(new NotifySubscriberJob([
+            'phone' => (int)$user->phone,
+            'text' => strtr(self::TEXT_TEMPLATE, [
+                '{title}' => $book->title
+            ]),
+        ]));
     }
 
     public function sendByAuthor(Book $book, Author $author): void

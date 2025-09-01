@@ -21,6 +21,17 @@ return [
         ]
     ],
     'components' => [
+        'log' => [
+            'targets' => [
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'categories' => ['app'],
+                    'logFile' => '@common/runtime/logs/app.log',
+                    'maxFileSize' => 10240 * 5, //50MB
+                    'maxLogFiles' => 10,
+                ],
+            ],
+        ],
         'authManager' => [
             'class' => ManagerInterface::class,
             'cache' => 'cache',
